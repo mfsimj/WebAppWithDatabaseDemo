@@ -52,6 +52,29 @@ stages:
         command: restore
         projects: '**/WebApp.csproj'
     
+    - task: WhiteSource@21
+      displayName: Scan Nuget Packages
+      enabled: ${{ parameters.runCompletePipeline }}
+
+#    - task: PowerShell@2
+#      displayName: Prepare for Sonar Cloud
+#      enabled: ${{ parameters.runCompletePipeline }}
+#      inputs:
+#        targetType: 'inline'
+#        script: |
+#          $paths = Get-ChildItem -include *.csproj -Recurse
+#                foreach($pathobject in $paths) 
+#                {
+#                    $path = $pathobject.fullname
+#                    $doc = New-Object System.Xml.XmlDocument
+#                    $doc.Load($path)
+#                    $child = $doc.CreateElement("ProjectGuid")
+#                    $child.InnerText = [guid]::NewGuid().ToString().ToUpper()
+#                    $node = $doc.SelectSingleNode("//Project/PropertyGroup")
+#                    $node.AppendChild($child)
+#                    $doc.Save($path)
+#                }
+#        workingDirectory: 'WebApp'
 
 #stages:
 #- stage: Build_Stage
