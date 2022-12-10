@@ -76,6 +76,20 @@ stages:
                 }
         workingDirectory: 'WebApp'
 
+    - task: SonarCloudPrepare@1
+      displayName: Prepare analysis on SonarCloud
+      enabled: ${{ parameters.runCompletePipeline }}
+      inputs:
+        SonarCloud: SonarCloud
+        organization: az400nov2022mdanisha1
+        projectKey: az400Nov2022mdanisha1_mslabs
+
+    - task: DotNetCoreCLI@2
+      displayName: Build WebApp
+      inputs:
+        projects: '**/WebApp.csproj'
+        arguments: '--configuration $(BuildConfiguration)'
+
 #stages:
 #- stage: Build_Stage
 #  displayName: Build Apps
