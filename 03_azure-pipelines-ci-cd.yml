@@ -185,11 +185,13 @@ stages:
         ArtifactName: arm
 
 
+
+
 - stage: Dev_Stage
   displayName: Create & Deploy to Dev
   dependsOn: Build_Stage
   variables:
-    azureSubscription: 'WebAppWithDatabaseDemo_spn' # couldn't be referenced
+    azureSubscription: 'Azure Pass - Sponsorship(e1938137-6e8e-4e7b-b3fa-8c71b51891a7)' # couldn't be referenced
     ResourceGroupName: '$(Prefix)-$(Release.EnvironmentName)-$(UniqueId)-RG'
     Database.Admin: 'houssem'
     Database.Password: '@Aa123456' # to be secured in Key Vault
@@ -216,6 +218,27 @@ stages:
         artifactName: arm
         downloadPath: $(System.DefaultWorkingDirectory)
 
+    - task: AzureResourceGroupDeployment@2
+      displayName: Validate ARM templates
+      enabled: ${{ parameters.runCompletePipeline }}
+      inputs:
+        azureSubscription: 'Azure Pass - Sponsorship(e1938137-6e8e-4e7b-b3fa-8c71b51891a7)'
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: '$(ResourceGroupName)'
+        location: 'EastUS'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(System.DefaultWorkingDirectory)/arm/WebSiteSQLDatabase.json'
+        csmParametersFile: '$(System.DefaultWorkingDirectory)/arm/WebSiteSQLDatabase.parameters.json'
+        overrideParameters: '-hostingPlanName $(hostingPlanName) -skuName "F1" -skuCapacity 1 -administratorLogin $(Database.Admin) -administratorLoginPassword $(Database.Password) -databaseName $(Database.Name) -collation "SQL_Latin1_General_CP1_CI_AS" -edition "Basic" -maxSizeBytes "1073741824" -requestedServiceObjectiveName "Basic" -webSiteName $(WebAppName) -sqlserverName $(SqlServerName)'
+        deploymentMode: 'Validation'
+
+#    - task: AzSKARMTemplateChecker@4
+#      displayName: Scan ARM templates using AzSK
+#      enabled: ${{ parameters.runCompletePipeline }}
+#      continueOnError: true
+#      inputs:
+#        ARMTemplateFilePath: '$(System.DefaultWorkingDirectory)/arm/WebSiteSQLDatabase.json'
+#        ARMTemplateParameterFilePath: '$(System.DefaultWorkingDirectory)/arm/WebSiteSQLDatabase.parameters.json'
 #stages:
 #- stage: Build_Stage
 #  displayName: Build Apps
