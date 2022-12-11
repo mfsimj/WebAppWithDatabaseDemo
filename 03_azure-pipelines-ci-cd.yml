@@ -220,7 +220,7 @@ stages:
 
     - task: AzureResourceGroupDeployment@2
       displayName: Validate ARM templates
-      enabled: ${{ parameters.runCompletePipeline }}
+      #enabled: ${{ parameters.runCompletePipeline }}
       inputs:
         azureSubscription: 'Azure Pass - Sponsorship(e1938137-6e8e-4e7b-b3fa-8c71b51891a7)'
         action: 'Create Or Update Resource Group'
