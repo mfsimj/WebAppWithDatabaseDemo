@@ -25,6 +25,11 @@ parameters:
   type: boolean
   default: true
 
+- name: runBuildUIDevPipeline
+  displayName: Build UI Dev Tasks
+  type: boolean
+  default: false
+
 stages:
 - stage: Build_Stage
   displayName: Build Apps
@@ -145,20 +150,24 @@ stages:
 
     steps:
     - task: NuGetToolInstaller@0
+      enabled: ${{ parameters.runBuildUIDevPipeline }}
       displayName: Use NuGet 4.3.0
 
     - task: NuGetCommand@2
+      enabled: ${{ parameters.runBuildUIDevPipeline }}
       displayName: Restoore NuGet Packages
       inputs:
         restoreSolution: WebAppWithDatabase.sln
 
     - task: MSBuild@1
       displayName: Build SeleniumUiTests.csproj
+      enabled: ${{ parameters.runBuildUIDevPipeline }}
       inputs:
         solution: SeleniumUiTests/SeleniumUiTests.csproj
         msbuildArguments: '/p:OutDir=$(Build.ArtifactStagingDirectory)'
 
     - task: PublishBuildArtifacts@1
+      enabled: ${{ parameters.runBuildUIDevPipeline }}
       displayName: 'Publish Artifact: UI-Test'
       inputs:
         ArtifactName: ui-tests
