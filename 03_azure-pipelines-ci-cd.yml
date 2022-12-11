@@ -264,7 +264,7 @@ stages:
       displayName: Preview Template Changes (What-If)
       inputs:
         workingDirectory: $(System.DefaultWorkingDirectory)/arm/
-        azureSubscription: 'WebAppWithDatabaseDemo_spn'
+        azureSubscription: 'Azure Pass - Sponsorship(e1938137-6e8e-4e7b-b3fa-8c71b51891a7)'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: 'az deployment group what-if --resource-group $(ResourceGroupName) --name rollout01 --template-file  WebSiteSQLDatabase.json --parameters WebSiteSQLDatabase.parameters.json'
@@ -274,8 +274,8 @@ stages:
       displayName: Deploy ARM templates
       inputs:
         deploymentScope: 'Resource Group'
-        azureResourceManagerConnection: 'WebAppWithDatabaseDemo_spn'
-        subscriptionId: '4b72ed90-7ca3-4e76-8d0f-31a2c0bee7a3'
+        azureResourceManagerConnection: 'Azure Pass - Sponsorship(e1938137-6e8e-4e7b-b3fa-8c71b51891a7)'
+        subscriptionId: 'e1938137-6e8e-4e7b-b3fa-8c71b51891a7'
         action: 'Create Or Update Resource Group'
         resourceGroupName: '$(ResourceGroupName)'
         location: 'West Europe'
@@ -290,10 +290,10 @@ stages:
       enabled: ${{ parameters.runCompletePipeline }}
       continueOnError: true
       inputs:
-        ConnectedServiceNameARM: 'WebAppWithDatabaseDemo_spn'
+        ConnectedServiceNameARM: 'Azure Pass - Sponsorship(e1938137-6e8e-4e7b-b3fa-8c71b51891a7)'
         GenerateMethodParameterSetSelection: 'ResourceGroupName'
         ResourceGroupName: '$(ResourceGroupName)'
-        SubscriptionId: '4b72ed90-7ca3-4e76-8d0f-31a2c0bee7a3'
+        SubscriptionId: 'e1938137-6e8e-4e7b-b3fa-8c71b51891a7'
         EnableGSSscan: true
 #
 
