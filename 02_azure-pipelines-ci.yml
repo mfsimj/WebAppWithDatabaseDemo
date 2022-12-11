@@ -48,8 +48,8 @@ jobs:
     displayName: 'Prepare analysis on SonarCloud'
     inputs:
       SonarCloud: SonarCloud
-      organization: houssemdellai
-      projectKey: WebAppWithDatabaseDemo
+      organization: az400nov2022mdanisha1
+      projectKey: az400Nov2022mdanisha1_mslabs
   
   - task: DotNetCoreCLI@2
     displayName: Build
