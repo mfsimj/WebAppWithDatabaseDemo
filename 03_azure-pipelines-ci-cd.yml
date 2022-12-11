@@ -295,8 +295,57 @@ stages:
         ResourceGroupName: '$(ResourceGroupName)'
         SubscriptionId: 'e1938137-6e8e-4e7b-b3fa-8c71b51891a7'
         EnableGSSscan: true
-#
 
+  - job: Deploy_DEV
+    displayName: Deploy Apps to DEV
+    dependsOn: Create_DEV
+    pool:
+      vmImage: 'windows-2019'
+    steps:
+
+    - checkout: none
+# new JOB: Deploy App & Database
+    - task: DownloadBuildArtifacts@0    
+      displayName: Download WebApp.zip
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'drop'
+        itemPattern: '**/WebApp.zip'
+        downloadPath: '$(System.DefaultWorkingDirectory)'
+
+    - task: AzureRmWebAppDeployment@3
+      displayName: Deploy WebApp to Azure
+      inputs:
+        azureSubscription: 'WebAppWithDatabaseDemo_spn'
+        appType: 'app'
+        WebAppName: '$(WebAppName)'
+        Package: '$(System.DefaultWorkingDirectory)/drop/WebApp.zip'
+        TakeAppOfflineFlag: true
+        JSONFiles: '**/appsettings.json'
+
+    - task: DownloadBuildArtifacts@0    
+      displayName: Download DacPac
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'dacpac'
+        itemPattern: '**/*.dacpac'
+        downloadPath: '$(System.DefaultWorkingDirectory)'
+
+    - task: SqlAzureDacpacDeployment@1
+      displayName: Deploy DacPac to SQL Azure
+      inputs:
+        azureSubscription: 'WebAppWithDatabaseDemo_spn'
+        AuthenticationType: 'server'
+        ServerName: '$(SqlServerName).database.windows.net,1433'
+        DatabaseName: '$(Database.Name)'
+        SqlUsername: '$(Database.Admin)'
+        SqlPassword: '$(Database.Password)'
+        deployType: 'DacpacTask'
+        DeploymentAction: 'Publish'
+        DacpacFile: '$(System.DefaultWorkingDirectory)/dacpac/WebApp.Database.dacpac'
+        IpDetectionMethod: 'AutoDetect'
 
 #    - task: AzSKARMTemplateChecker@4
 #      displayName: Scan ARM templates using AzSK
